@@ -9,6 +9,7 @@
 
 ```r
 data = read.csv("activity.csv")
+complete = na.omit(data)
 ```
 
 
@@ -19,7 +20,7 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 
 ```r
-complete = na.omit(data)
+
 byDay = data.frame(unlist(tapply(complete$steps, complete$date, sum)))
 byDay = as.numeric(unlist(byDay))
 nas = is.na(byDay)
@@ -45,8 +46,8 @@ paste("The mean number of steps by day is: ", mean(byDay), " and the median is: 
 1 Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 ```r
-complete = subset(data, complete.cases(cbind(data$steps, data$interval)))
-stepsByInterval = tapply(complete$steps, complete$interval, sum)
+
+stepsByInterval = tapply(complete$steps, complete$interval, mean)
 plot(stepsByInterval, type = "l")
 ```
 
@@ -122,10 +123,13 @@ complete$day = as.factor(complete$day)
 
 
 ```r
+ofweekends = subset(complete, day == "weekend")
+ofweekdays = subset(complete, day == "weekday")
+
 par(mfrow = c(2, 1))
-plot(complete$steps[complete$day == "weekend"], type = "l", main = "weekend", 
+plot(tapply(ofweekends$steps, ofweekends$interval, mean), type = "l", main = "weekend", 
     xlab = "interval", ylab = "number of steps")
-plot(complete$steps[complete$day == "weekday"], type = "l", main = "weekday", 
+plot(tapply(ofweekdays$steps, ofweekdays$interval, mean), type = "l", main = "weekend", 
     xlab = "interval", ylab = "number of steps")
 ```
 
